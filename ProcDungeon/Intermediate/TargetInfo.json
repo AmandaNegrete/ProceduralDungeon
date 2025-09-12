@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "ProcDungeon",
+			"Path": "..\\Source\\ProcDungeon.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "ProcDungeonEditor",
+			"Path": "..\\Source\\ProcDungeonEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

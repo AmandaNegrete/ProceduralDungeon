@@ -11,6 +11,7 @@
     <None Include="..\..\Source\ProcDungeonEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\.vsconfig" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
@@ -64,6 +65,18 @@
     </ClCompile>
     <ClInclude Include="..\..\Source\ProcDungeon\ProcDungeonPlayerController.h">
       <Filter>Source\ProcDungeon</Filter>
+    </ClInclude>
+    <Filter Include="Source\ProcDungeon\Private">
+      <UniqueIdentifier>{8B6037E8-6A92-3C18-908C-199183108D06}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\ProcDungeon\Private\DungeonGenerator.cpp">
+      <Filter>Source\ProcDungeon\Private</Filter>
+    </ClCompile>
+    <Filter Include="Source\ProcDungeon\Public">
+      <UniqueIdentifier>{D74A082F-17A1-38A7-BC31-8416D39DC864}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\ProcDungeon\Public\DungeonGenerator.h">
+      <Filter>Source\ProcDungeon\Public</Filter>
     </ClInclude>
     <Filter Include="Source\ProcDungeon\Variant_Horror">
       <UniqueIdentifier>{6C420BD9-46E8-3AAC-9DF2-64570A522B70}</UniqueIdentifier>

@@ -14,6 +14,12 @@ ADungeonGenerator::ADungeonGenerator()
 void ADungeonGenerator::BeginPlay()
 {
 	Super::BeginPlay();
+	//int width_, int height_, int maxRooms_, int minSize_, int maxSize_
+	Dungeon MyDungeon(50, 40, 12, 5, 10);
+
+	MyDungeon.generateDungeon();
+	MyDungeon.printDungeon();
+
 	
 }
 

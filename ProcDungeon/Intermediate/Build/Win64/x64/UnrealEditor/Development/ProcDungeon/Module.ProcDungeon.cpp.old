@@ -23,6 +23,7 @@
 #include "C:/Users/amand/ProceduralDungeon/ProcDungeon/Intermediate/Build/Win64/UnrealEditor/Inc/ProcDungeon/UHT/ShooterWeapon.gen.cpp"
 #include "C:/Users/amand/ProceduralDungeon/ProcDungeon/Intermediate/Build/Win64/UnrealEditor/Inc/ProcDungeon/UHT/ShooterWeaponHolder.gen.cpp"
 #include "C:/Users/amand/ProceduralDungeon/ProcDungeon/Intermediate/Build/Win64/x64/UnrealEditor/Development/ProcDungeon/PerModuleInline.gen.cpp"
+#include "C:/Users/amand/ProceduralDungeon/ProcDungeon/Source/ProcDungeon/Private/DungeonGenerator.cpp"
 #include "C:/Users/amand/ProceduralDungeon/ProcDungeon/Source/ProcDungeon/ProcDungeon.cpp"
 #include "C:/Users/amand/ProceduralDungeon/ProcDungeon/Source/ProcDungeon/ProcDungeonCameraManager.cpp"
 #include "C:/Users/amand/ProceduralDungeon/ProcDungeon/Source/ProcDungeon/ProcDungeonCharacter.cpp"

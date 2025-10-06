@@ -1,4 +1,5 @@
 /I "."
+/I "C:/Users/amand/ProceduralDungeon/ProcDungeon/Source/ProcDungeon/Private"
 /I "../Intermediate/Build/Win64/UnrealEditor/Inc/Engine/UHT"
 /I "Runtime/Engine/Classes"
 /I "Runtime/Engine/Public"
@@ -294,6 +295,7 @@
 /I "C:/Users/amand/ProceduralDungeon/ProcDungeon/Source/ProcDungeon/Variant_Shooter/UI"
 /I "C:/Users/amand/ProceduralDungeon/ProcDungeon/Source/ProcDungeon/Variant_Shooter/Weapons"
 /I "C:/Users/amand/ProceduralDungeon/ProcDungeon/Source"
+/I "C:/Users/amand/ProceduralDungeon/ProcDungeon/Source/ProcDungeon/Public"
 /I "../Plugins/EnhancedInput/Intermediate/Build/Win64/UnrealEditor/Inc/EnhancedInput/UHT"
 /I "../Plugins/EnhancedInput/Source"
 /I "../Plugins/EnhancedInput/Source/EnhancedInput/Public"

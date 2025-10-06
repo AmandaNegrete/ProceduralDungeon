@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProcDungeonModuleRules")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Development")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+093ee7d9e8a5850a8366b9f0a40b49b793e60537")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2f8fd9cedc1c06e12ae0be6eb017f92a3bd10ba")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProcDungeonModuleRules")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProcDungeonModuleRules")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

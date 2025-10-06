@@ -19,7 +19,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 // ********** Begin Class ADungeonGenerator ********************************************************
 PROCDUNGEON_API UClass* Z_Construct_UClass_ADungeonGenerator_NoRegister();
 
-#define FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_12_INCLASS_NO_PURE_DECLS \
+#define FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_14_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesADungeonGenerator(); \
 	friend struct Z_Construct_UClass_ADungeonGenerator_Statics; \
@@ -30,7 +30,7 @@ public: \
 	DECLARE_SERIALIZER(ADungeonGenerator)
 
 
-#define FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_12_ENHANCED_CONSTRUCTORS \
+#define FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_14_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	ADungeonGenerator(ADungeonGenerator&&) = delete; \
 	ADungeonGenerator(const ADungeonGenerator&) = delete; \
@@ -40,12 +40,12 @@ public: \
 	NO_API virtual ~ADungeonGenerator();
 
 
-#define FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_9_PROLOG
-#define FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_12_GENERATED_BODY \
+#define FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_11_PROLOG
+#define FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_14_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_12_INCLASS_NO_PURE_DECLS \
-	FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_12_ENHANCED_CONSTRUCTORS \
+	FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_14_INCLASS_NO_PURE_DECLS \
+	FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h_14_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 

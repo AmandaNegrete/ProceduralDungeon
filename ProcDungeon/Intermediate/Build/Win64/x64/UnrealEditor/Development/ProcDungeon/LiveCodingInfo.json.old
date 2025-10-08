@@ -26,7 +26,6 @@
 			"ShooterWeapon.gen.cpp.obj",
 			"ShooterWeaponHolder.gen.cpp.obj",
 			"PerModuleInline.gen.cpp.obj",
-			"DungeonGenerator.cpp.obj",
 			"ProcDungeon.cpp.obj",
 			"ProcDungeonCameraManager.cpp.obj",
 			"ProcDungeonCharacter.cpp.obj",
@@ -48,7 +47,9 @@
 			"ShooterPickup.cpp.obj",
 			"ShooterProjectile.cpp.obj",
 			"ShooterWeapon.cpp.obj",
-			"ShooterWeaponHolder.cpp.obj"
+			"ShooterWeaponHolder.cpp.obj",
+			"dungeon.cpp.obj",
+			"DungeonGenerator.cpp.obj"
 		]
 	}
 }

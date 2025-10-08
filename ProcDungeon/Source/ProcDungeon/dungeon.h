@@ -46,11 +46,11 @@ struct DungeonRoom{
     int width; //width of the room 
     int height; //height of the room 
 
-    int roomCenterCoordinateX() {
+    int roomCenterX() {
         int centerx = (x + (width / 2));
         return centerx;
     }
-    int roomCenterCoordinateY() {
+    int roomCenterY() {
         int centery = (y + (height / 2));
         return centery;
     }
@@ -62,6 +62,7 @@ class Dungeon{
         Dungeon(int width, int height, int maxRooms, int roomMinSize, int roomMaxSize);
         void generateDungeon(); //func generate the dungeon
         void printDungeon(); //func to print the dungeon
+        const std::vector<std::vector<int>>& getGrid() const;
     private:
         int width; 
         int height; 
@@ -88,6 +89,7 @@ class Dungeon{
         //up and down helper
         void createvertical(int y1, int y2, int x);
         //double dist(DungeonRoom a, DungeonRoom b);
+
 };             // keep track manually
 
 

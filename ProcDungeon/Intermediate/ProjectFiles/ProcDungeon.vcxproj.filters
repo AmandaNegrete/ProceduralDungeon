@@ -33,6 +33,12 @@
     <Filter Include="Source\ProcDungeon">
       <UniqueIdentifier>{7CEDDE87-D193-38F4-A986-27B0C1DF4B1D}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\ProcDungeon\dungeon.cpp">
+      <Filter>Source\ProcDungeon</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ProcDungeon\dungeon.h">
+      <Filter>Source\ProcDungeon</Filter>
+    </ClInclude>
     <None Include="..\..\Source\ProcDungeon\ProcDungeon.Build.cs">
       <Filter>Source\ProcDungeon</Filter>
     </None>

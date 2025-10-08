@@ -146,3 +146,7 @@ void Dungeon::createvertical(int y1, int y2, int x) {
         grid[y][x] = FLOOR_TILE;
     }
 }
+
+const std::vector<std::vector<int>>& Dungeon::getGrid() const {
+    return grid;
+}

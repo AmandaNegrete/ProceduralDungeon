@@ -37,6 +37,10 @@ private:
 #endif
 */
 
+
+const int WALL_TILE = 1;
+const int FLOOR_TILE = 0;
+
 struct DungeonRoom {
     int x;
     int y; // xy for position
@@ -87,3 +91,4 @@ private:
     void createhorizontal(int x1, int x2, int y);
     void createvertical(int y1, int y2, int x);
 };
+#endif

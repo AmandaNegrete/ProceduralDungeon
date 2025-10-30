@@ -29,7 +29,8 @@ void ADungeonGenerator::BeginPlay()
     // Create 
     //TODO 
     //randomize
-    Dungeon MyDungeon(50, 40, 12, 5, 10);
+   
+    Dungeon MyDungeon(50, 40, 70, 8, 20);
     MyDungeon.generateDungeon();
 
 
@@ -37,12 +38,17 @@ void ADungeonGenerator::BeginPlay()
 
  
     UStaticMesh* WallMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+    UMaterialInterface* WallMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/SM_Roads_05/Materials/Roads_05/MT00051-Pavement/MI_MT00051_Pavement.MI_MT00051_Pavement"));
     const float TileSize = 100.0f;
     for (int y = 0; y < Grid.size(); ++y)
     {
         for (int x = 0; x < Grid[y].size(); ++x)
         {
             int tile = Grid[y][x];
+
+            //if (tile == FLOOR_TILE) {
+            //
+            //}
             if (tile != WALL_TILE || !MyDungeon.edgeWall(x,y))
             {
                 continue; // Skip non-wall tiles
@@ -55,9 +61,11 @@ void ADungeonGenerator::BeginPlay()
             UStaticMeshComponent* WallComponent = NewObject<UStaticMeshComponent>(this);
             WallComponent->RegisterComponent();
             WallComponent->SetStaticMesh(WallMesh);
-
-            
-          
+            if (WallMaterial)
+            {
+                WallComponent->SetMaterial(0, WallMaterial);
+            }
+           
             WallComponent->SetWorldLocation(Position);
             WallComponent->SetWorldScale3D(FVector(1.0f, 1.0f, 10.0f));  
             WallComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
@@ -91,16 +99,15 @@ void ADungeonGenerator::RegenerateDungeon()
 {
     TArray<UActorComponent*> Components;
     GetComponents(UStaticMeshComponent::StaticClass(), Components);
-    for (UActorComponent* Comp : Components)
+    for (UActorComponent* Component1: Components)
     {
-        if (Comp != MeshComponent)
+        if (Component1 != MeshComponent)
         {
-            Comp->DestroyComponent();
+            Component1->DestroyComponent();
         }
     }
 
 }
-
 
 // Called every frame
 void ADungeonGenerator::Tick(float DeltaTime)

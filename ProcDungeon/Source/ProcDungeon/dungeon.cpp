@@ -69,14 +69,6 @@ void Dungeon::generateDungeon() {
         attempts_before_infinite++;
     }
 
-    // Add extra random connections between rooms to increase maze complexity
-    const int extraConnections = max(0, static_cast<int>(rooms.size()) / 3);
-    for (int i = 0; i < extraConnections; ++i) {
-        int a = rand() % rooms.size();
-        int b = rand() % rooms.size();
-        if (a != b) corridor(rooms[a], rooms[b]);
-    }
-
     // Choose start and exit rooms randomly (distinct) if possible
     if (rooms.size() >= 2) {
         int startIndex = rand() % rooms.size();
@@ -93,7 +85,7 @@ void Dungeon::generateDungeon() {
     }
 }
 
-void Dungeon::printDungeon() {
+/*void Dungeon::printDungeon() {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             if (grid[y][x] == WALL_TILE)
@@ -104,7 +96,7 @@ void Dungeon::printDungeon() {
         cout << "\n";
     }
 }
-
+*/
 void Dungeon::createRoom(DungeonRoom room) {
     for (int y = room.y; y < room.y + room.height && y < height; y++) {
         for (int x = room.x; x < room.x + room.width && x < width; x++) {
@@ -114,7 +106,7 @@ void Dungeon::createRoom(DungeonRoom room) {
 }
 
 
-bool Dungeon::overlaps(     DungeonRoom room) {
+bool Dungeon::overlaps( DungeonRoom room) {
     for (size_t i = 0; i < rooms.size(); i++) {
         DungeonRoom other = rooms[i];
         if (room.x < other.x + other.width + 1 &&
@@ -128,11 +120,10 @@ bool Dungeon::overlaps(     DungeonRoom room) {
 }
 
 void Dungeon::corridor(DungeonRoom room_a, DungeonRoom room_b) {
-    // jitter centers slightly for variety
-    int room_ax = room_a.roomCenterX() + (rand() % 3 - 1); // -1..1
-    int room_ay = room_a.roomCenterY() + (rand() % 3 - 1);
-    int room_bx = room_b.roomCenterX() + (rand() % 3 - 1);
-    int room_by = room_b.roomCenterY() + (rand() % 3 - 1);
+    int room_ax = room_a.roomCenterX() + (rand() % 4 - 1);
+    int room_ay = room_a.roomCenterY() + (rand() % 4 - 1);
+    int room_bx = room_b.roomCenterX() + (rand() % 4 - 1);
+    int room_by = room_b.roomCenterY() + (rand() % 4 - 1);
 
     if (rand() % 2 == 0) {
         createhorizontal(room_ax, room_bx, room_ay);
@@ -147,7 +138,7 @@ int Dungeon::randomRoomValues(int a, int b) {
     return a + (rand() % (b - a + 1));
 }
 
-
+//examples from other
 void Dungeon::createhorizontal(int x1, int x2, int y) {
     if (x2 < x1) swap(x1, x2);
     if (y < 0 || y >= height) return;
@@ -156,6 +147,7 @@ void Dungeon::createhorizontal(int x1, int x2, int y) {
     }
 }
 
+//examples from other
 void Dungeon::createvertical(int y1, int y2, int x) {
     if (y2 < y1) swap(y1, y2);
     if (x < 0 || x >= width) return;
@@ -177,10 +169,31 @@ std::pair<int, int> Dungeon::getexit() const {
 
 }
 
+//i want to return the middle of floor and wall 
 bool Dungeon::edgeWall(int x, int y) const {
-  if 
-      //need to calculate the space between
-      //TODO
+    //need to calculate the space between
+    if (x < 0 || x >= width || y < 0 || y >= height) {
+        return false;
+    }
 
+    //only walls for this 
+    if (grid[y][x] != WALL_TILE) {
+        return false;
+    }
+    //now top bottom left and right checking 
+    if (x > 0 && grid[y][x - 1] == FLOOR_TILE) {
+        return true;
+    }
+    if (x < width - 1 && grid[y][x + 1] == FLOOR_TILE) {
+        return true;
+    }
+    if (y > 0 && grid[y - 1][x] == FLOOR_TILE) {
+        return true;
+    }
+    if (y < height - 1 && grid[y + 1][x] == FLOOR_TILE) {
+        return true;
+    }
+    //nothing found
     return false;
+
 }

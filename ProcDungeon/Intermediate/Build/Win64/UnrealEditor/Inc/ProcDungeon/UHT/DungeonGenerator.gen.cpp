@@ -19,9 +19,44 @@ PROCDUNGEON_API UClass* Z_Construct_UClass_ADungeonGenerator_NoRegister();
 UPackage* Z_Construct_UPackage__Script_ProcDungeon();
 // ********** End Cross Module References **********************************************************
 
+// ********** Begin Class ADungeonGenerator Function RegenerateDungeon *****************************
+struct Z_Construct_UFunction_ADungeonGenerator_RegenerateDungeon_Statics
+{
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "Dungeon" },
+		{ "ModuleRelativePath", "Public/DungeonGenerator.h" },
+	};
+#endif // WITH_METADATA
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_ADungeonGenerator_RegenerateDungeon_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_ADungeonGenerator, nullptr, "RegenerateDungeon", nullptr, 0, 0, RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_ADungeonGenerator_RegenerateDungeon_Statics::Function_MetaDataParams), Z_Construct_UFunction_ADungeonGenerator_RegenerateDungeon_Statics::Function_MetaDataParams)},  };
+UFunction* Z_Construct_UFunction_ADungeonGenerator_RegenerateDungeon()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_ADungeonGenerator_RegenerateDungeon_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(ADungeonGenerator::execRegenerateDungeon)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->RegenerateDungeon();
+	P_NATIVE_END;
+}
+// ********** End Class ADungeonGenerator Function RegenerateDungeon *******************************
+
 // ********** Begin Class ADungeonGenerator ********************************************************
 void ADungeonGenerator::StaticRegisterNativesADungeonGenerator()
 {
+	UClass* Class = ADungeonGenerator::StaticClass();
+	static const FNameNativePtrPair Funcs[] = {
+		{ "RegenerateDungeon", &ADungeonGenerator::execRegenerateDungeon },
+	};
+	FNativeFunctionRegistrar::RegisterFunctions(Class, Funcs, UE_ARRAY_COUNT(Funcs));
 }
 FClassRegistrationInfo Z_Registration_Info_UClass_ADungeonGenerator;
 UClass* ADungeonGenerator::GetPrivateStaticClass()
@@ -68,6 +103,10 @@ struct Z_Construct_UClass_ADungeonGenerator_Statics
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_MeshComponent;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 	static UObject* (*const DependentSingletons[])();
+	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
+		{ &Z_Construct_UFunction_ADungeonGenerator_RegenerateDungeon, "RegenerateDungeon" }, // 4192954770
+	};
+	static_assert(UE_ARRAY_COUNT(FuncInfo) < 2048);
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<ADungeonGenerator>::IsAbstract,
 	};
@@ -88,11 +127,11 @@ const UECodeGen_Private::FClassParams Z_Construct_UClass_ADungeonGenerator_Stati
 	"Engine",
 	&StaticCppClassTypeInfo,
 	DependentSingletons,
-	nullptr,
+	FuncInfo,
 	Z_Construct_UClass_ADungeonGenerator_Statics::PropPointers,
 	nullptr,
 	UE_ARRAY_COUNT(DependentSingletons),
-	0,
+	UE_ARRAY_COUNT(FuncInfo),
 	UE_ARRAY_COUNT(Z_Construct_UClass_ADungeonGenerator_Statics::PropPointers),
 	0,
 	0x009001A4u,
@@ -114,10 +153,10 @@ ADungeonGenerator::~ADungeonGenerator() {}
 struct Z_CompiledInDeferFile_FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h__Script_ProcDungeon_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_ADungeonGenerator, ADungeonGenerator::StaticClass, TEXT("ADungeonGenerator"), &Z_Registration_Info_UClass_ADungeonGenerator, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ADungeonGenerator), 4145995340U) },
+		{ Z_Construct_UClass_ADungeonGenerator, ADungeonGenerator::StaticClass, TEXT("ADungeonGenerator"), &Z_Registration_Info_UClass_ADungeonGenerator, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ADungeonGenerator), 2193322396U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h__Script_ProcDungeon_3614252852(TEXT("/Script/ProcDungeon"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h__Script_ProcDungeon_3241636569(TEXT("/Script/ProcDungeon"),
 	Z_CompiledInDeferFile_FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h__Script_ProcDungeon_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_amand_ProceduralDungeon_ProcDungeon_Source_ProcDungeon_Public_DungeonGenerator_h__Script_ProcDungeon_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);

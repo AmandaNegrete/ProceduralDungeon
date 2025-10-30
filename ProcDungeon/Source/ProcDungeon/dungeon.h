@@ -1,4 +1,4 @@
-#ifndef DUNGEON_H
+﻿#ifndef DUNGEON_H
 #define DUNGEON_H
 ///////////////////
 #include <vector>
@@ -37,60 +37,53 @@ private:
 #endif
 */
 
-const int WALL_TILE = 1;
-const int FLOOR_TILE = 0;
-
-struct DungeonRoom{
+struct DungeonRoom {
     int x;
-    int y; //xy for position!!
-    int width; //width of the room 
-    int height; //height of the room 
+    int y; // xy for position
+    int width; // width of the room
+    int height; // height of the room
 
-    int roomCenterX() {
-        int centerx = (x + (width / 2));
-        return centerx;
+    int roomCenterX() const {
+        return x + (width / 2);
     }
-    int roomCenterY() {
-        int centery = (y + (height / 2));
-        return centery;
+    int roomCenterY() const {
+        return y + (height / 2);
     }
 };
 
-//define the dungeon class
-class Dungeon{
-    public:
-        Dungeon(int width, int height, int maxRooms, int roomMinSize, int roomMaxSize);
-        void generateDungeon(); //func generate the dungeon
-        void printDungeon(); //func to print the dungeon
-        const std::vector<std::vector<int>>& getGrid() const;
-    private:
-        int width; 
-        int height; 
-        int maxRooms; //max number of rooms
-        int roomMinSize; //min size of the room
-        int roomMaxSize; //max size of the room
-        //int grid[40][50]; // 40 rows 50 columns
-        std::vector<std::vector<int>> grid;
-        //DungeonRoom* rooms = new DungeonRoom[maxRooms];  // allocate space for list of room
-        std::vector<DungeonRoom> rooms; 
-        int roomCount = 0;   
-        
-        //FUNCTIONS IN CPP
-        //"make the room"
-        void createRoom(DungeonRoom room);
-        //helps for randomness
-        int randomRoomValues(int range_a, int range_b);
-        //check if rooms overlap
-        //int check_values(int value, int min, int max);
-        bool overlaps(DungeonRoom room);
-        void corridor(DungeonRoom room_a, DungeonRoom room_b);
-        //side to side helper
-        void createhorizontal(int x1, int x2, int y);
-        //up and down helper
-        void createvertical(int y1, int y2, int x);
-        //double dist(DungeonRoom a, DungeonRoom b);
+// define the dungeon class
+class Dungeon {
+public:
+    Dungeon(int width, int height, int maxRooms, int roomMinSize, int roomMaxSize);
+    void generateDungeon(); // func generate the dungeon
+    void printDungeon(); // func to print the dungeon
+    const std::vector<std::vector<int>>& getGrid() const;
 
-};             // keep track manually
+    bool edgeWall(int x, int y) const;
+    //found example that used this method migh help migh be USELESS
+    std::pair<int,int> getstart() const;
+    std::pair<int,int> getexit() const;
 
+private:
+    int width;
+    int height;
+    int maxRooms; // max number of rooms
+    int roomMinSize; // min size of the room
+    int roomMaxSize; // max size of the room
 
-#endif
+    std::vector<std::vector<int>> grid;
+    std::vector<DungeonRoom> rooms;
+    int roomCount = 0;
+
+    // start/exit tile coordinates (x, y)
+    std::pair<int,int> startTile{1,1};
+    std::pair<int,int> exitTile{1,1};
+
+    // FUNCTIONS IN CPP
+    void createRoom(DungeonRoom room);
+    int randomRoomValues(int range_a, int range_b);
+    bool overlaps(DungeonRoom room);
+    void corridor(DungeonRoom room_a, DungeonRoom room_b);
+    void createhorizontal(int x1, int x2, int y);
+    void createvertical(int y1, int y2, int x);
+};

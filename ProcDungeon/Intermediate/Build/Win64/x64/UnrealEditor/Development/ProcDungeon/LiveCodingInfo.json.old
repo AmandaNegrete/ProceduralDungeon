@@ -2,13 +2,11 @@
 	"RemapUnityFiles": 
 	{
 		"Module.ProcDungeon.cpp.obj": [
-			"DungeonGenerator.gen.cpp.obj",
 			"EnvQueryContext_Target.gen.cpp.obj",
 			"HorrorCharacter.gen.cpp.obj",
 			"HorrorGameMode.gen.cpp.obj",
 			"HorrorPlayerController.gen.cpp.obj",
 			"HorrorUI.gen.cpp.obj",
-			"ProcDungeon.init.gen.cpp.obj",
 			"ProcDungeonCameraManager.gen.cpp.obj",
 			"ProcDungeonCharacter.gen.cpp.obj",
 			"ProcDungeonGameMode.gen.cpp.obj",
@@ -25,7 +23,6 @@
 			"ShooterUI.gen.cpp.obj",
 			"ShooterWeapon.gen.cpp.obj",
 			"ShooterWeaponHolder.gen.cpp.obj",
-			"PerModuleInline.gen.cpp.obj",
 			"ProcDungeon.cpp.obj",
 			"ProcDungeonCameraManager.cpp.obj",
 			"ProcDungeonCharacter.cpp.obj",
@@ -48,6 +45,9 @@
 			"ShooterProjectile.cpp.obj",
 			"ShooterWeapon.cpp.obj",
 			"ShooterWeaponHolder.cpp.obj",
+			"DungeonGenerator.gen.cpp.obj",
+			"ProcDungeon.init.gen.cpp.obj",
+			"PerModuleInline.gen.cpp.obj",
 			"dungeon.cpp.obj",
 			"DungeonGenerator.cpp.obj"
 		]

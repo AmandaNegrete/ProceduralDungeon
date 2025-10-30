@@ -1,3 +1,4 @@
+﻿
 #include "dungeon.h"
 #include <iostream>
 #include <cstdlib>
@@ -45,11 +46,50 @@ void Dungeon::generateDungeon() {
             createRoom(newRoom);
             // Connect with the beforeroom
             if (!rooms.empty()) {
-                corridor(rooms.back(), newRoom);
+                DungeonRoom closestRoom = rooms[0];
+                int closestDist = INT_MAX;
+
+                for (const auto& r : rooms)
+                {
+                    int dx = (r.x + r.width / 2) - (newRoom.x + newRoom.width / 2);
+                    int dy = (r.y + r.height / 2) - (newRoom.y + newRoom.height / 2);
+                    int dist = dx * dx + dy * dy;
+
+                    if (dist < closestDist)
+                    {
+                        closestDist = dist;
+                        closestRoom = r;
+                    }
+                }
+
+                corridor(closestRoom, newRoom);
             }
             rooms.push_back(newRoom);
         }
         attempts_before_infinite++;
+    }
+
+    // Add extra random connections between rooms to increase maze complexity
+    const int extraConnections = max(0, static_cast<int>(rooms.size()) / 3);
+    for (int i = 0; i < extraConnections; ++i) {
+        int a = rand() % rooms.size();
+        int b = rand() % rooms.size();
+        if (a != b) corridor(rooms[a], rooms[b]);
+    }
+
+    // Choose start and exit rooms randomly (distinct) if possible
+    if (rooms.size() >= 2) {
+        int startIndex = rand() % rooms.size();
+        int exitIndex = rand() % rooms.size();
+        while (exitIndex == startIndex) exitIndex = rand() % rooms.size();
+        startTile = { rooms[startIndex].roomCenterX(), rooms[startIndex].roomCenterY() };
+        exitTile  = { rooms[exitIndex].roomCenterX(),  rooms[exitIndex].roomCenterY()  };
+    } else if (rooms.size() == 1) {
+        startTile = exitTile = { rooms.front().roomCenterX(), rooms.front().roomCenterY() };
+    } else {
+        // fallback corners
+        startTile = {1,1};
+        exitTile = { max(1, width - 2), max(1, height - 2) };
     }
 }
 
@@ -73,26 +113,8 @@ void Dungeon::createRoom(DungeonRoom room) {
     }
 }
 
-int Dungeon::randomRoomValues(int range_a, int range_b) {
-    if (range_b < range_a) range_b = range_a;
-    return range_a + rand() % (range_b - range_a + 1);
-}
 
-/*
-bool Dungeon::overlaps(DungeonRoom room) {
-    for (size_t i = 0; i < rooms.size(); i++) {
-        DungeonRoom other = rooms[i];
-        if (room.x < other.x + other.width + 1 &&
-            room.x + room.width + 1 > other.x &&
-            room.y < other.y + other.height + 1 &&
-            room.y + room.height + 1 > other.y) {
-            return true;
-        }
-    }
-    return false;
-
-*/
-bool Dungeon::overlaps(DungeonRoom room) {
+bool Dungeon::overlaps(     DungeonRoom room) {
     for (size_t i = 0; i < rooms.size(); i++) {
         DungeonRoom other = rooms[i];
         if (room.x < other.x + other.width + 1 &&
@@ -106,20 +128,12 @@ bool Dungeon::overlaps(DungeonRoom room) {
 }
 
 void Dungeon::corridor(DungeonRoom room_a, DungeonRoom room_b) {
-    int room_ax = room_a.roomCenterX();
-    int room_ay = room_a.roomCenterY();
-    int room_bx = room_b.roomCenterX();
-    int room_by = room_b.roomCenterY();
+    // jitter centers slightly for variety
+    int room_ax = room_a.roomCenterX() + (rand() % 3 - 1); // -1..1
+    int room_ay = room_a.roomCenterY() + (rand() % 3 - 1);
+    int room_bx = room_b.roomCenterX() + (rand() % 3 - 1);
+    int room_by = room_b.roomCenterY() + (rand() % 3 - 1);
 
-    /*if (rand() % 3 == 0) {
-        createhorizontal(a, bx, ay);
-        createvertical(ay, by, bx);
-    } else {
-        createvertical(ay, by, ax);
-        createhorizontal(ax, bx, by);
-    }
-    }
-    */
     if (rand() % 2 == 0) {
         createhorizontal(room_ax, room_bx, room_ay);
         createvertical(room_ay, room_by, room_bx);
@@ -129,8 +143,11 @@ void Dungeon::corridor(DungeonRoom room_a, DungeonRoom room_b) {
     }
 }
 
+int Dungeon::randomRoomValues(int a, int b) {
+    return a + (rand() % (b - a + 1));
+}
 
-//FUNCTIONS THAT I ADAPTED FROM https://github.com/kentril0/ProceduralTerrain
+
 void Dungeon::createhorizontal(int x1, int x2, int y) {
     if (x2 < x1) swap(x1, x2);
     if (y < 0 || y >= height) return;
@@ -149,4 +166,21 @@ void Dungeon::createvertical(int y1, int y2, int x) {
 
 const std::vector<std::vector<int>>& Dungeon::getGrid() const {
     return grid;
+}
+
+std::pair<int, int> Dungeon::getstart() const {
+    return startTile;
+}
+
+std::pair<int, int> Dungeon::getexit() const {
+    return exitTile;
+
+}
+
+bool Dungeon::edgeWall(int x, int y) const {
+  if 
+      //need to calculate the space between
+      //TODO
+
+    return false;
 }

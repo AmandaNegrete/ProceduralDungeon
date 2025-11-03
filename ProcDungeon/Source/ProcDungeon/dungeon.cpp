@@ -7,13 +7,13 @@
 using namespace std;
 
 //Purpose: Constructor to initialize dungeon parameters and grid
-Dungeon::Dungeon(int width_, int height_, int maxRooms_, int minSize_, int maxSize_) {
+Dungeon::Dungeon(int width_, int height_, int maxRooms_, int minSize_, int maxSize_, int thickness) {
     width = width_;
     height = height_;
     maxRooms = maxRooms_;
     roomMinSize = minSize_;
     roomMaxSize = maxSize_;
-
+    thickness_path = thickness;
     // Initialize grid using .resize in cstdlib!!!
     grid.resize(height);
     for (int i = 0; i < height; i++) {
@@ -68,19 +68,22 @@ void Dungeon::generateDungeon() {
         }
         attempts_before_infinite++;
     }
-
-    // Choose start and exit rooms randomly (distinct) if possible
+    //more than one room 
     if (rooms.size() >= 2) {
+        //random start and room 
         int startIndex = rand() % rooms.size();
         int exitIndex = rand() % rooms.size();
-        while (exitIndex == startIndex) exitIndex = rand() % rooms.size();
+        while (exitIndex == startIndex) {
+            exitIndex = rand() % rooms.size();
+        }
         startTile = { rooms[startIndex].roomCenterX(), rooms[startIndex].roomCenterY() };
         exitTile  = { rooms[exitIndex].roomCenterX(),  rooms[exitIndex].roomCenterY()  };
     } else if (rooms.size() == 1) {
         startTile = exitTile = { rooms.front().roomCenterX(), rooms.front().roomCenterY() };
     } else {
-        // fallback corners
+        //in theory the top left corner
         startTile = {1,1};
+        //bottom right
         exitTile = { max(1, width - 2), max(1, height - 2) };
     }
 }
@@ -119,20 +122,20 @@ bool Dungeon::overlaps( DungeonRoom room) {
     return false;
 }
 
-void Dungeon::corridor(DungeonRoom room_a, DungeonRoom room_b) {
-    int room_ax = room_a.roomCenterX() + (rand() % 4 - 1);
-    int room_ay = room_a.roomCenterY() + (rand() % 4 - 1);
-    int room_bx = room_b.roomCenterX() + (rand() % 4 - 1);
-    int room_by = room_b.roomCenterY() + (rand() % 4 - 1);
+void Dungeon::corridor(DungeonRoom a, DungeonRoom b) {
+    int ax = a.roomCenterX();
+    int ay = a.roomCenterY();
+    int bx = b.roomCenterX();
+    int by = b.roomCenterY();
 
-    if (rand() % 2 == 0) {
-        createhorizontal(room_ax, room_bx, room_ay);
-        createvertical(room_ay, room_by, room_bx);
-    } else {
-        createvertical(room_ay, room_by, room_ax);
-        createhorizontal(room_ax, room_bx, room_by);
-    }
+    int midX = (ax + bx) / 2;
+    int midY = (ay + by) / 2;
+
+    createhorizontal(ax, midX, ay);
+    createvertical(ay, midY, midX);
+    createhorizontal(midX, bx, by);
 }
+
 
 int Dungeon::randomRoomValues(int a, int b) {
     return a + (rand() % (b - a + 1));
@@ -141,18 +144,43 @@ int Dungeon::randomRoomValues(int a, int b) {
 //examples from other
 void Dungeon::createhorizontal(int x1, int x2, int y) {
     if (x2 < x1) swap(x1, x2);
-    if (y < 0 || y >= height) return;
-    for (int x = max(0, x1); x <= min(x2, width - 1); x++) {
-        grid[y][x] = FLOOR_TILE;
+    //offset the thickness to fill 
+    int halfThickness = thickness_path / 2;
+    for (int offset = -halfThickness; offset <= halfThickness; offset++)
+    {
+        int newY = y + offset;
+
+        //skip oer the a
+        if (newY < 0 || newY >= height)
+            continue;
+
+        //x range on floor 
+        for (int x = x1; x <= x2; x++)
+        {
+            if (x < 0 || x >= width)
+                continue;
+
+            grid[newY][x] = FLOOR_TILE;
+        }
     }
 }
+
 
 //examples from other
 void Dungeon::createvertical(int y1, int y2, int x) {
     if (y2 < y1) swap(y1, y2);
-    if (x < 0 || x >= width) return;
-    for (int y = max(0, y1); y <= min(y2, height - 1); y++) {
-        grid[y][x] = FLOOR_TILE;
+    // How many tiles to expand left and right for thickness
+    int halfThickness = thickness_path / 2;
+    for (int offset = -halfThickness; offset <= halfThickness; offset++){   
+        int newX = x + offset;
+        if (newX < 0 || newX >= width) continue;
+
+        for (int y = y1; y <= y2; y++)
+        {
+            if (y < 0 || y >= height)
+                continue;
+            grid[y][newX] = FLOOR_TILE;
+        }
     }
 }
 
@@ -181,9 +209,11 @@ bool Dungeon::edgeWall(int x, int y) const {
         return false;
     }
     //now top bottom left and right checking 
+    //subtract x val by one to look at the col to the LEFT of the x marker 
     if (x > 0 && grid[y][x - 1] == FLOOR_TILE) {
         return true;
     }
+    //same for the right- add one 
     if (x < width - 1 && grid[y][x + 1] == FLOOR_TILE) {
         return true;
     }

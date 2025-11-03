@@ -3,6 +3,7 @@
 #include "DungeonGenerator.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include <ctime>
 
 
 // Sets default values
@@ -27,10 +28,18 @@ void ADungeonGenerator::BeginPlay()
     Super::BeginPlay();
 
     // Create 
-    //TODO 
-    //randomize
-   
-    Dungeon MyDungeon(50, 40, 70, 8, 20);
+    //TODO: RANDDOM STREAM 
+    //see blue noise proj4 
+    srand(time(nullptr)); 
+    
+    int width = 40 + rand() % 20;       
+    int height = 30 + rand() % 20;     
+    int maxRooms = 20 + rand() % 10;    
+    int minSize = 6 + rand() % 5;       
+    int maxSize = minSize + rand() % 10;
+    int thickness = 3;
+
+    Dungeon MyDungeon(width, height, maxRooms, minSize, maxSize, thickness);
     MyDungeon.generateDungeon();
 
 

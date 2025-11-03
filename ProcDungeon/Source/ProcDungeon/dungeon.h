@@ -58,9 +58,9 @@ struct DungeonRoom {
 // define the dungeon class
 class Dungeon {
 public:
-    Dungeon(int width, int height, int maxRooms, int roomMinSize, int roomMaxSize);
+    Dungeon(int width, int height, int maxRooms, int roomMinSize, int roomMaxSize, int thickness);
     void generateDungeon(); // func generate the dungeon
-    void printDungeon(); // func to print the dungeon
+    //void printDungeon(); // func to print the dungeon
     const std::vector<std::vector<int>>& getGrid() const;
 
     bool edgeWall(int x, int y) const;
@@ -74,6 +74,7 @@ private:
     int maxRooms; // max number of rooms
     int roomMinSize; // min size of the room
     int roomMaxSize; // max size of the room
+    int thickness_path = 2; 
 
     std::vector<std::vector<int>> grid;
     std::vector<DungeonRoom> rooms;

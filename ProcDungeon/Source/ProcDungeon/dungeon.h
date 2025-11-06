@@ -67,6 +67,10 @@ public:
     //found example that used this method migh help migh be USELESS
     std::pair<int,int> getstart() const;
     std::pair<int,int> getexit() const;
+    const std::vector<DungeonRoom>& getRooms() const { 
+        return rooms;
+    }
+    TArray<FIntPoint> Wall_Torch_Positions(const DungeonRoom& Room) const;
 
 private:
     int width;
@@ -91,5 +95,6 @@ private:
     void corridor(DungeonRoom room_a, DungeonRoom room_b);
     void createhorizontal(int x1, int x2, int y);
     void createvertical(int y1, int y2, int x);
+ 
 };
 #endif

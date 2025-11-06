@@ -3,6 +3,7 @@
 #include "DungeonGenerator.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include "Components/PointLightComponent.h"
 #include <ctime>
 
 
@@ -35,20 +36,29 @@ void ADungeonGenerator::BeginPlay()
     int width = 40 + rand() % 20;       
     int height = 30 + rand() % 20;     
     int maxRooms = 20 + rand() % 10;    
-    int minSize = 6 + rand() % 5;       
+    int minSize = 6;       
     int maxSize = minSize + rand() % 10;
-    int thickness = 3;
+    int thickness = 2;
 
     Dungeon MyDungeon(width, height, maxRooms, minSize, maxSize, thickness);
     MyDungeon.generateDungeon();
-
 
     const auto& Grid = MyDungeon.getGrid();
 
  
     UStaticMesh* WallMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
     UMaterialInterface* WallMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/SM_Roads_05/Materials/Roads_05/MT00051-Pavement/MI_MT00051_Pavement.MI_MT00051_Pavement"));
+
+    UStaticMesh* FloorMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
+    UMaterialInterface* FloorMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/SM_Roads_05/Materials/Roads_05/MT00051-Pavement/MI_MT00051_Pavement.MI_MT00051_Pavement"));
+
+    UStaticMesh* CeilingMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
+    UMaterialInterface* CeilingMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/SM_Roads_05/Materials/Roads_05/MT00051-Pavement/MI_MT00051_Pavement.MI_MT00051_Pavement"));
+
+  
     const float TileSize = 100.0f;
+    const float FloorZ = 1.0f;
+    const float CeilingZ =550.0f;
     for (int y = 0; y < Grid.size(); ++y)
     {
         for (int x = 0; x < Grid[y].size(); ++x)
@@ -58,29 +68,86 @@ void ADungeonGenerator::BeginPlay()
             //if (tile == FLOOR_TILE) {
             //
             //}
-            if (tile != WALL_TILE || !MyDungeon.edgeWall(x,y))
+            if (tile == WALL_TILE && MyDungeon.edgeWall(x,y))
             {
-                continue; // Skip non-wall tiles
+                FVector Position = FVector(x * TileSize, y * TileSize, 50.0f); // Z = 50
+
+
+                UStaticMeshComponent* WallComponent = NewObject<UStaticMeshComponent>(this);
+                WallComponent->RegisterComponent();
+                WallComponent->SetStaticMesh(WallMesh);
+                if (WallMaterial)
+                {
+                    WallComponent->SetMaterial(0, WallMaterial);
+                }
+
+                WallComponent->SetWorldLocation(Position);
+                WallComponent->SetWorldScale3D(FVector(1.0f, 1.0f, 10.0f));
+                WallComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+            }
+            
+            if (tile == FLOOR_TILE) {
+                FVector FloorPosition = FVector(x * TileSize, y * TileSize, FloorZ + 1); // Z = 50
+
+
+                UStaticMeshComponent* FloorComponent = NewObject<UStaticMeshComponent>(this);
+                FloorComponent->RegisterComponent();
+                FloorComponent->SetStaticMesh(FloorMesh);
+                if (FloorMaterial)
+                {
+                    FloorComponent->SetMaterial(0, FloorMaterial);
+                }
+
+                FloorComponent->SetWorldLocation(FloorPosition);
+                FloorComponent->SetWorldRotation(FRotator(0.0f, 0.0f, 0.0f));
+                FloorComponent->SetWorldScale3D(FVector(TileSize / 100.0f, TileSize / 100.0f, 1.0f));
+                FloorComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+            }
+
+            if (tile == FLOOR_TILE) {
+                FVector CeilingPosition = FVector(x * TileSize, y * TileSize, CeilingZ - 2); // Z = 50
+
+
+                UStaticMeshComponent* CeilingComponent = NewObject<UStaticMeshComponent>(this);
+                CeilingComponent->RegisterComponent();
+                CeilingComponent->SetStaticMesh(CeilingMesh);
+                if (CeilingMaterial)
+                {
+                    CeilingComponent->SetMaterial(0, CeilingMaterial);
+                }
+
+                CeilingComponent->SetWorldLocation(CeilingPosition);
+                CeilingComponent->SetWorldRotation(FRotator(180.0f, 0.0f, 0.0f));
+                CeilingComponent->SetWorldScale3D(FVector(TileSize / 100.0f, TileSize / 100.0f, 1.0f));
+                CeilingComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
             }
 
           
-            FVector Position = FVector(x * TileSize, y * TileSize, 50.0f); // Z = 50
-
-           
-            UStaticMeshComponent* WallComponent = NewObject<UStaticMeshComponent>(this);
-            WallComponent->RegisterComponent();
-            WallComponent->SetStaticMesh(WallMesh);
-            if (WallMaterial)
-            {
-                WallComponent->SetMaterial(0, WallMaterial);
-            }
-           
-            WallComponent->SetWorldLocation(Position);
-            WallComponent->SetWorldScale3D(FVector(1.0f, 1.0f, 10.0f));  
-            WallComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+            
         }
     }
+    //registering light component
+    const auto& Rooms = MyDungeon.getRooms();
+    for (const auto& Room : Rooms)
+    {
+        TArray<FIntPoint> WallPos_= MyDungeon.Wall_Torch_Positions(Room);
+        if (WallPos_.IsEmpty()){
+            continue;
+        }
 
+        FIntPoint POI = WallPos_[FMath::RandRange(0, WallPos_.Num() - 1)];
+        FVector WallPos(POI.X * TileSize, POI.Y * TileSize, CeilingZ * 0.4f);
+
+        UPointLightComponent* PointLight = NewObject<UPointLightComponent>(this);
+        PointLight->RegisterComponent();
+        PointLight->SetIntensity(2000.0f);
+        PointLight->SetLightColor(FLinearColor(1.0f, 0.75f, 0.6f)); // warm torchlight
+        PointLight->SetAttenuationRadius(500.0f);
+        // PointLight->SetCastShadows(true);
+        PointLight->SetCastShadows(true);
+        PointLight->SetWorldLocation(WallPos);
+        PointLight->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+    }
     auto start = MyDungeon.getstart();
     auto exit = MyDungeon.getexit();
 

@@ -86,6 +86,8 @@ void Dungeon::generateDungeon() {
         //bottom right
         exitTile = { max(1, width - 2), max(1, height - 2) };
     }
+
+
 }
 
 /*void Dungeon::printDungeon() {
@@ -226,4 +228,19 @@ bool Dungeon::edgeWall(int x, int y) const {
     //nothing found
     return false;
 
+}
+//https://forums.unrealengine.com/t/how-to-create-a-pointlight-at-runtime-use-c/373942?utm_source=chatgpt.com
+TArray<FIntPoint> Dungeon::Wall_Torch_Positions(const DungeonRoom& Room) const {
+    TArray<FIntPoint> WallPos;
+    for (int x = Room.x; x < Room.x + Room.width; ++x) {
+        WallPos.Add(FIntPoint(x, Room.y));
+        //avoiding not being in the room 
+        WallPos.Add(FIntPoint(x, Room.y + Room.height - 1));
+    }
+    for (int y = Room.y; y < Room.y + Room.height; ++y) {
+        WallPos.Add(FIntPoint(Room.x, y));
+        //avoiding not being in the room 
+        WallPos.Add(FIntPoint(Room.x + Room.width - 1, y));
+    }
+    return WallPos;
 }

@@ -36,7 +36,7 @@ void ADungeonGenerator::BeginPlay()
     int width = 40 + rand() % 20;       
     int height = 30 + rand() % 20;     
     int maxRooms = 20 + rand() % 10;    
-    int minSize = 6;       
+    int minSize = 5;       
     int maxSize = minSize + rand() % 10;
     int thickness = 2;
 
@@ -159,15 +159,19 @@ void ADungeonGenerator::BeginPlay()
     }
 
     FVector ExitPos(exit.first * TileSize, exit.second * TileSize, 100.0f);
-   /*StaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
-    UStaticMeshComponent* ExitMarker = NewObject<UStaticMeshComponent>(this);
-    ExitMarker->RegisterComponent();
-    ExitMarker->SetStaticMesh(CubeMesh);
-    ExitMarker->SetWorldLocation(ExitPos);
-    ExitMarker->SetWorldScale3D(FVector(1.0f, 1.0f, 0.2f));
+    UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+    UStaticMeshComponent* ExitCollide = NewObject<UStaticMeshComponent>(this);
+    ExitCollide->RegisterComponent();
+    ExitCollide->SetStaticMesh(CubeMesh);
+    ExitCollide->SetWorldLocation(ExitPos);
+    ExitCollide->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
+    ExitCollide->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+    ExitCollide->SetGenerateOverlapEvents(true);
+    ExitCollide->OnComponentBeginOverlap.AddDynamic(this, &ADungeonGenerator::OverlapExit);
 
-    ExitMarker->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
-    */
+
+    ExitCollide->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+    
 }
 
  
@@ -198,4 +202,10 @@ void ADungeonGenerator::Tick(float DeltaTime)
 
 }
 
-
+void ADungeonGenerator::OverlapExit(UPrimitiveComponent* obj, AActor* actor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult){
+    if (ACharacter* Player = Cast<ACharacter>(actor))
+    {
+        RegenerateDungeon();
+        BeginPlay(); 
+    }
+}

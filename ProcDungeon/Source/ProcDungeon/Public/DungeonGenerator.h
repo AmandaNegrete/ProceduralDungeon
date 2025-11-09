@@ -25,6 +25,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
+	// from example found in the 
+	void OverlapExit( UPrimitiveComponent* obj, AActor* actor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex,bool bFromSweep, const FHitResult& SweepResult);
+
+
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")
 	void RegenerateDungeon();
 

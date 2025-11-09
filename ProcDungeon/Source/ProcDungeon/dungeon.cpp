@@ -90,18 +90,7 @@ void Dungeon::generateDungeon() {
 
 }
 
-/*void Dungeon::printDungeon() {
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            if (grid[y][x] == WALL_TILE)
-                cout << "◼";
-            else
-                cout << "☐";
-        }
-        cout << "\n";
-    }
-}
-*/
+
 void Dungeon::createRoom(DungeonRoom room) {
     for (int y = room.y; y < room.y + room.height && y < height; y++) {
         for (int x = room.x; x < room.x + room.width && x < width; x++) {

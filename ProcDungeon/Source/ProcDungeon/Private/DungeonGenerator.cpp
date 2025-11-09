@@ -31,12 +31,12 @@ void ADungeonGenerator::BeginPlay()
     // Create 
     //TODO: RANDDOM STREAM 
     //see blue noise proj4 
-    srand(time(nullptr)); 
-    
-    int width = 40 + rand() % 20;       
-    int height = 30 + rand() % 20;     
-    int maxRooms = 20 + rand() % 10;    
-    int minSize = 5;       
+    srand(time(nullptr));
+
+    int width = 40 + rand() % 20;
+    int height = 30 + rand() % 20;
+    int maxRooms = 20 + rand() % 10;
+    int minSize = 5;
     int maxSize = minSize + rand() % 10;
     int thickness = 2;
 
@@ -45,7 +45,7 @@ void ADungeonGenerator::BeginPlay()
 
     const auto& Grid = MyDungeon.getGrid();
 
- 
+
     UStaticMesh* WallMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
     UMaterialInterface* WallMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/SM_Roads_05/Materials/Roads_05/MT00051-Pavement/MI_MT00051_Pavement.MI_MT00051_Pavement"));
 
@@ -55,10 +55,10 @@ void ADungeonGenerator::BeginPlay()
     UStaticMesh* CeilingMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
     UMaterialInterface* CeilingMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/SM_Roads_05/Materials/Roads_05/MT00051-Pavement/MI_MT00051_Pavement.MI_MT00051_Pavement"));
 
-  
+
     const float TileSize = 100.0f;
     const float FloorZ = 1.0f;
-    const float CeilingZ =550.0f;
+    const float CeilingZ = 550.0f;
     for (int y = 0; y < Grid.size(); ++y)
     {
         for (int x = 0; x < Grid[y].size(); ++x)
@@ -68,7 +68,7 @@ void ADungeonGenerator::BeginPlay()
             //if (tile == FLOOR_TILE) {
             //
             //}
-            if (tile == WALL_TILE && MyDungeon.edgeWall(x,y))
+            if (tile == WALL_TILE && MyDungeon.edgeWall(x, y))
             {
                 FVector Position = FVector(x * TileSize, y * TileSize, 50.0f); // Z = 50
 
@@ -85,7 +85,7 @@ void ADungeonGenerator::BeginPlay()
                 WallComponent->SetWorldScale3D(FVector(1.0f, 1.0f, 10.0f));
                 WallComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
             }
-            
+
             if (tile == FLOOR_TILE) {
                 FVector FloorPosition = FVector(x * TileSize, y * TileSize, FloorZ + 1); // Z = 50
 
@@ -122,21 +122,29 @@ void ADungeonGenerator::BeginPlay()
                 CeilingComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
             }
 
-          
-            
+
+
         }
     }
     //registering light component
     const auto& Rooms = MyDungeon.getRooms();
     for (const auto& Room : Rooms)
     {
-        TArray<FIntPoint> WallPos_= MyDungeon.Wall_Torch_Positions(Room);
-        if (WallPos_.IsEmpty()){
+        TArray<FIntPoint> WallPos_ = MyDungeon.Wall_Torch_Positions(Room);
+        if (WallPos_.IsEmpty()) {
             continue;
         }
-
+       // UStaticMesh* TorchMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Dungeon_props_pack/Props/Static_Mesh/SM_torch06.SM_torch06"));
         FIntPoint POI = WallPos_[FMath::RandRange(0, WallPos_.Num() - 1)];
         FVector WallPos(POI.X * TileSize, POI.Y * TileSize, CeilingZ * 0.4f);
+
+        //UStaticMeshComponent* TorchComponent = NewObject<UStaticMeshComponent>(this);
+        //TorchComponent->SetStaticMesh(TorchMesh);
+        //TorchComponent->SetWorldLocation(WallPos);
+        //TorchComponent->SetWorldScale3D(FVector(1.0f));
+        //TorchComponent->RegisterComponent();
+        //TorchComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+    
 
         UPointLightComponent* PointLight = NewObject<UPointLightComponent>(this);
         PointLight->RegisterComponent();
@@ -147,6 +155,11 @@ void ADungeonGenerator::BeginPlay()
         PointLight->SetCastShadows(true);
         PointLight->SetWorldLocation(WallPos);
         PointLight->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+
+        // PointLight->SetCastShadows(true);
+        //PointLight->AttachToComponent(TorchComponent, FAttachmentTransformRules::KeepRelativeTransform);
+        //PointLight->SetRelativeLocation(FVector(0.f, 0.f, 50.f)); // small offset above torch flame
+       // PointLight->RegisterComponent();
     }
     auto start = MyDungeon.getstart();
     auto exit = MyDungeon.getexit();
@@ -159,7 +172,7 @@ void ADungeonGenerator::BeginPlay()
     }
 
     FVector ExitPos(exit.first * TileSize, exit.second * TileSize, 100.0f);
-    UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+    UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Dungeon_props_pack/Props/Static_Mesh/SM_open_book.SM_open_book"));
     UStaticMeshComponent* ExitCollide = NewObject<UStaticMeshComponent>(this);
     ExitCollide->RegisterComponent();
     ExitCollide->SetStaticMesh(CubeMesh);
@@ -193,17 +206,13 @@ void ADungeonGenerator::RegenerateDungeon()
 void ADungeonGenerator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-    APlayerController* PC = GetWorld()->GetFirstPlayerController();
-    if (PC && PC->WasInputKeyJustPressed(EKeys::R))
-    {
-    //TO DO FIX REGEN
-        RegenerateDungeon();
-    }
 
 }
 
 void ADungeonGenerator::OverlapExit(UPrimitiveComponent* obj, AActor* actor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult){
-    if (ACharacter* Player = Cast<ACharacter>(actor))
+    // if the player is the same as the actor pointer
+    //doing this if i ever wanted to add enemies
+    if (ACharacter* player = Cast<ACharacter>(actor))
     {
         RegenerateDungeon();
         BeginPlay(); 

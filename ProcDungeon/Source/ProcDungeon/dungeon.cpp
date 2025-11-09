@@ -68,26 +68,46 @@ void Dungeon::generateDungeon() {
         }
         attempts_before_infinite++;
     }
+
+    for (size_t i = 1; i < rooms.size(); ++i) {
+        corridor(rooms[i - 1], rooms[i]);
+    }
     //more than one room 
     if (rooms.size() >= 2) {
         //random start and room 
+        int far = 0;
+        float squared = -1.0f;
         int startIndex = rand() % rooms.size();
+        DungeonRoom room_start = rooms[startIndex];
         int exitIndex = rand() % rooms.size();
-        while (exitIndex == startIndex) {
-            exitIndex = rand() % rooms.size();
+
+        for (int i = 0; i < rooms.size(); ++i) {
+            if (i == startIndex) continue;
+            DungeonRoom other = rooms[i];
+            float dx = (room_start.roomCenterX() - other.roomCenterX());
+            float dy = (room_start.roomCenterY() - other.roomCenterY());
+            float distSq = dx * dx + dy * dy;
+            if (distSq > squared) {
+                squared = distSq;
+                far = i;
+            }
         }
-        startTile = { rooms[startIndex].roomCenterX(), rooms[startIndex].roomCenterY() };
-        exitTile  = { rooms[exitIndex].roomCenterX(),  rooms[exitIndex].roomCenterY()  };
-    } else if (rooms.size() == 1) {
-        startTile = exitTile = { rooms.front().roomCenterX(), rooms.front().roomCenterY() };
-    } else {
-        //in theory the top left corner
-        startTile = {1,1};
-        //bottom right
-        exitTile = { max(1, width - 2), max(1, height - 2) };
-    }
-
-
+        //brackets to avoid std:: old way! learned that today
+        startTile = { 
+            room_start.roomCenterX(), room_start.roomCenterY() 
+        };
+        DungeonRoom exitRoom = rooms[far];
+        exitTile = { exitRoom.roomCenterX(), exitRoom.roomCenterY() };
+        }
+        else if (rooms.size() == 1) {
+            startTile = exitTile = { 
+                rooms.front().roomCenterX(), rooms.front().roomCenterY()
+            };
+        }
+        else {
+            startTile = { 1, 1 };
+            exitTile = { max(1, width - 2), max(1, height - 2) };
+        }
 }
 
 

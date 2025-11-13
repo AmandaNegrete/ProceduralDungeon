@@ -68,46 +68,26 @@ void Dungeon::generateDungeon() {
         }
         attempts_before_infinite++;
     }
-
-    for (size_t i = 1; i < rooms.size(); ++i) {
-        corridor(rooms[i - 1], rooms[i]);
-    }
     //more than one room 
     if (rooms.size() >= 2) {
         //random start and room 
-        int far = 0;
-        float squared = -1.0f;
         int startIndex = rand() % rooms.size();
-        DungeonRoom room_start = rooms[startIndex];
         int exitIndex = rand() % rooms.size();
+        while (exitIndex == startIndex) {
+            exitIndex = rand() % rooms.size();
+        }
+        startTile = { rooms[startIndex].roomCenterX(), rooms[startIndex].roomCenterY() };
+        exitTile  = { rooms[exitIndex].roomCenterX(),  rooms[exitIndex].roomCenterY()  };
+    } else if (rooms.size() == 1) {
+        startTile = exitTile = { rooms.front().roomCenterX(), rooms.front().roomCenterY() };
+    } else {
+        //in theory the top left corner
+        startTile = {1,1};
+        //bottom right
+        exitTile = { max(1, width - 2), max(1, height - 2) };
+    }
 
-        for (int i = 0; i < rooms.size(); ++i) {
-            if (i == startIndex) continue;
-            DungeonRoom other = rooms[i];
-            float dx = (room_start.roomCenterX() - other.roomCenterX());
-            float dy = (room_start.roomCenterY() - other.roomCenterY());
-            float distSq = dx * dx + dy * dy;
-            if (distSq > squared) {
-                squared = distSq;
-                far = i;
-            }
-        }
-        //brackets to avoid std:: old way! learned that today
-        startTile = { 
-            room_start.roomCenterX(), room_start.roomCenterY() 
-        };
-        DungeonRoom exitRoom = rooms[far];
-        exitTile = { exitRoom.roomCenterX(), exitRoom.roomCenterY() };
-        }
-        else if (rooms.size() == 1) {
-            startTile = exitTile = { 
-                rooms.front().roomCenterX(), rooms.front().roomCenterY()
-            };
-        }
-        else {
-            startTile = { 1, 1 };
-            exitTile = { max(1, width - 2), max(1, height - 2) };
-        }
+
 }
 
 
@@ -138,13 +118,24 @@ void Dungeon::corridor(DungeonRoom a, DungeonRoom b) {
     int ay = a.roomCenterY();
     int bx = b.roomCenterX();
     int by = b.roomCenterY();
-
+/*
     int midX = (ax + bx) / 2;
     int midY = (ay + by) / 2;
 
     createhorizontal(ax, midX, ay);
     createvertical(ay, midY, midX);
     createhorizontal(midX, bx, by);
+
+*/
+    //random val is even, continous do horizontal before vertical 
+    if (rand() % 2 == 0) {
+        createhorizontal(ax, bx, ay);
+        createvertical(ay, by, bx);
+    }
+    else {
+        createvertical(ay, by, bx);
+        createhorizontal(ax, bx, ay);
+    }
 }
 
 
@@ -252,4 +243,30 @@ TArray<FIntPoint> Dungeon::Wall_Torch_Positions(const DungeonRoom& Room) const {
         WallPos.Add(FIntPoint(Room.x + Room.width - 1, y));
     }
     return WallPos;
+}
+
+TArray<FIntPoint> Dungeon::Wall_Torch_Position_Mesh(const DungeonRoom& Room) const {
+    TArray<FIntPoint> WallPos1;
+    for (int x = Room.x; x < Room.x + Room.width; ++x) {
+        // Check top boundary
+        if (edgeWall(x, Room.y)) {
+            WallPos1.Add(FIntPoint(x, Room.y));
+        }
+        // Check bottom boundary
+        if (edgeWall(x, Room.y + Room.height - 1)) {
+            WallPos1.Add(FIntPoint(x, Room.y + Room.height - 1));
+        }
+    }
+    for (int y = Room.y; y < Room.y + Room.height; ++y) {
+        // Check left boundary
+        if (edgeWall(Room.x, y)) {
+            WallPos1.Add(FIntPoint(Room.x, y));
+        }
+        // Check right boundary
+        if (edgeWall(Room.x + Room.width - 1, y)) {
+            WallPos1.Add(FIntPoint(Room.x + Room.width - 1, y));
+        }
+    }
+
+    return WallPos1;
 }

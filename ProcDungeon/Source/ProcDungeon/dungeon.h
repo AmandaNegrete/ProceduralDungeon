@@ -71,6 +71,7 @@ public:
         return rooms;
     }
     TArray<FIntPoint> Wall_Torch_Positions(const DungeonRoom& Room) const;
+    TArray<FIntPoint> Wall_Torch_Position_Mesh(const DungeonRoom& Room) const;
 
 private:
     int width;

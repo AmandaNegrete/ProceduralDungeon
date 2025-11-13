@@ -34,7 +34,6 @@ public:
 	void RegenerateDungeon();
 
 
-
 private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* MeshComponent;

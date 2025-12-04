@@ -72,7 +72,8 @@ public:
     }
     TArray<FIntPoint> Wall_Torch_Positions(const DungeonRoom& Room) const;
     TArray<FIntPoint> Wall_Torch_Position_Mesh(const DungeonRoom& Room) const;
-
+    TArray<FIntPoint> Wall_LightPoint_Positions(const DungeonRoom& Room) const;
+    FVector WallPositionSet(int x, int y) const;
 private:
     int width;
     int height;

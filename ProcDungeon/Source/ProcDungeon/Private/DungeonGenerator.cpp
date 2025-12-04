@@ -126,46 +126,51 @@ void ADungeonGenerator::BeginPlay()
 
         }
     }
+   // UStaticMesh* TorchMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cone.Cone"));
     //registering light component
     const auto& Rooms = MyDungeon.getRooms();
     for (const auto& Room : Rooms)
     {
         TArray<FIntPoint> WallPos_ = MyDungeon.Wall_Torch_Positions(Room);
+        TArray<FIntPoint> LightPos_ = MyDungeon.Wall_LightPoint_Positions(Room);
         if (WallPos_.IsEmpty()) {
             continue;
         }
-     
-        //UStaticMesh* TorchMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Dungeon_props_pack/Props/Static_Mesh/SM_torch06.SM_torch06"));
+        if (LightPos_.IsEmpty()) {
+            continue;
+        }
+
         UStaticMesh* TorchMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cone.Cone"));
         FIntPoint POI = WallPos_[FMath::RandRange(0, WallPos_.Num() - 1)];
-        //*.4 guess and check like height lol
-        FVector WallPosPoint(POI.X * TileSize , POI.Y * TileSize, CeilingZ * 0.4f);
-        FVector WallPos((POI.X * TileSize) - 20, POI.Y * TileSize, CeilingZ * 0.4f);
-        
+        FVector Normal = MyDungeon.WallPositionSet(POI.X, POI.Y);
+        const float HalfInside = -TileSize * 0.3f;
+
+        FVector TorchPosition(
+            POI.X * TileSize + Normal.X * HalfInside,
+            POI.Y * TileSize + Normal.Y * HalfInside,
+            CeilingZ * 0.4f
+        );
+        FRotator TorchRotation = Normal.Rotation();
+        TorchRotation.Pitch += 180.0f;
+        FVector LightPos = TorchPosition + FVector(0, 0, 60.f);
+
         UStaticMeshComponent* TorchComponent = NewObject<UStaticMeshComponent>(this);
-        TorchComponent->SetStaticMesh(TorchMesh);
-        TorchComponent->SetWorldLocation(WallPos);
-        TorchComponent->SetWorldScale3D(FVector(0.5f));
-        TorchComponent->SetWorldRotation(FRotator(0.0f, 0.0f, 180.0f));
-        TorchComponent->RegisterComponent();
         TorchComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
-        
+        TorchComponent->SetStaticMesh(TorchMesh);
+        TorchComponent->SetWorldLocation(TorchPosition);
+        TorchComponent->SetWorldScale3D(FVector(0.5f));
+        TorchComponent->SetWorldRotation(TorchRotation);
+        TorchComponent->RegisterComponent();
 
         UPointLightComponent* PointLight = NewObject<UPointLightComponent>(this);
-        PointLight->RegisterComponent();
+        PointLight->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
         PointLight->SetIntensity(1000.0f);
-        PointLight->SetLightColor(FLinearColor(1.0f, 0.8f, 0.6f)); // warm torchlight
+        PointLight->SetLightColor(FLinearColor(1.0f, 0.8f, 0.6f));
         PointLight->SetAttenuationRadius(500.0f);
         PointLight->SetCastShadows(true);
-        PointLight->SetWorldLocation(WallPosPoint);
-        PointLight->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
-        /*
-        PointLight->SetCastShadows(true);
-        PointLight->AttachToComponent(TorchComponent, FAttachmentTransformRules::KeepRelativeTransform);
-        PointLight->SetRelativeLocation(FVector(0.f, 0.f, 50.f)); // small offset above torch flame
+        PointLight->SetWorldLocation(LightPos);
         PointLight->RegisterComponent();
-        */
-    }
+    }   
     auto start = MyDungeon.getstart();
     auto exit = MyDungeon.getexit();
 

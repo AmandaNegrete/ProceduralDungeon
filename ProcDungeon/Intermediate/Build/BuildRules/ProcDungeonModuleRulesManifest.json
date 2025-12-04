@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"C:\\Users\\amand\\ProceduralDungeon\\ProcDungeon\\Source\\ProcDungeon\\ProcDungeon.Build.cs",
+		"C:\\Users\\amand\\ProceduralDungeon\\ProcDungeon\\Source\\ProcDungeon.Target.cs",
+		"C:\\Users\\amand\\ProceduralDungeon\\ProcDungeon\\Source\\ProcDungeonEditor.Target.cs"
+	],
+	"EngineVersion": "5.6.1"
+}

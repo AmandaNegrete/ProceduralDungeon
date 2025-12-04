@@ -1,0 +1,28 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\amand\\proceduraldungeon\\procdungeon\\intermediate\\build\\win64\\unrealeditor\\inc\\procdungeon\\uht\\shooternpc.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\amand\\proceduraldungeon\\procdungeon\\intermediate\\build\\win64\\x64\\procdungeoneditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\amand\\proceduraldungeon\\procdungeon\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\procdungeon\\definitions.procdungeon.h",
+            "c:\\users\\amand\\proceduraldungeon\\procdungeon\\source\\procdungeon\\variant_shooter\\ai\\shooternpc.h",
+            "c:\\users\\amand\\proceduraldungeon\\procdungeon\\source\\procdungeon\\procdungeoncharacter.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\character.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\charactermovementreplication.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\net\\core\\public\\net\\core\\nettoken\\nettokenexportcontext.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\experimental\\iris\\core\\public\\iris\\serialization\\irisobjectreferencepackagemap.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\iriscore\\uht\\irisobjectreferencepackagemap.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\charactermovementreplication.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\classes\\gameframework\\rootmotionsource.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\rootmotionsource.generated.h",
+            "c:\\program files\\epic games\\ue_5.6\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\character.generated.h",
+            "c:\\users\\amand\\proceduraldungeon\\procdungeon\\intermediate\\build\\win64\\unrealeditor\\inc\\procdungeon\\uht\\procdungeoncharacter.generated.h",
+            "c:\\users\\amand\\proceduraldungeon\\procdungeon\\source\\procdungeon\\variant_shooter\\weapons\\shooterweaponholder.h",
+            "c:\\users\\amand\\proceduraldungeon\\procdungeon\\intermediate\\build\\win64\\unrealeditor\\inc\\procdungeon\\uht\\shooterweaponholder.generated.h",
+            "c:\\users\\amand\\proceduraldungeon\\procdungeon\\intermediate\\build\\win64\\unrealeditor\\inc\\procdungeon\\uht\\shooternpc.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

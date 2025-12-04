@@ -43,6 +43,7 @@ void Dungeon::generateDungeon() {
 
         // Check overlaps
         if (!overlaps(newRoom)) {
+
             createRoom(newRoom);
             // Connect with the beforeroom
             if (!rooms.empty()) {
@@ -229,6 +230,26 @@ bool Dungeon::edgeWall(int x, int y) const {
     return false;
 
 }
+//for wall point so that it doesnt get placed outside!s
+FVector Dungeon::WallPositionSet(int x, int y) const
+{
+    //checking grid neighbors to find floor neighbiors
+    //first to left 
+    if (x > 0 && grid[y][x - 1] == FLOOR_TILE)
+        return FVector(-1, 0, 0);
+    //right 
+    if (x < width - 1 && grid[y][x + 1] == FLOOR_TILE)
+        return FVector(1, 0, 0);
+    //above
+    if (y > 0 && grid[y - 1][x] == FLOOR_TILE)
+        return FVector(0, -1, 0);
+    //below
+    if (y < height - 1 && grid[y + 1][x] == FLOOR_TILE)
+        return FVector(0, 1, 0);
+
+    //else default for the placement given below
+    return FVector(1, 0, 0);
+}
 //https://forums.unrealengine.com/t/how-to-create-a-pointlight-at-runtime-use-c/373942?utm_source=chatgpt.com
 TArray<FIntPoint> Dungeon::Wall_Torch_Positions(const DungeonRoom& Room) const {
     TArray<FIntPoint> WallPos;
@@ -244,6 +265,22 @@ TArray<FIntPoint> Dungeon::Wall_Torch_Positions(const DungeonRoom& Room) const {
     }
     return WallPos;
 }
+
+TArray<FIntPoint> Dungeon::Wall_LightPoint_Positions(const DungeonRoom& Room) const {
+    TArray<FIntPoint> WallPos;
+    for (int x = Room.x; x < Room.x + Room.width; ++x) {
+        WallPos.Add(FIntPoint(x, Room.y));
+        //avoiding not being in the room 
+        WallPos.Add(FIntPoint(x, Room.y + Room.height - 1));
+    }
+    for (int y = Room.y; y < Room.y + Room.height; ++y) {
+        WallPos.Add(FIntPoint(Room.x, y));
+        //avoiding not being in the room 
+        WallPos.Add(FIntPoint(Room.x + Room.width - 1, y));
+    }
+    return WallPos;
+}
+
 
 TArray<FIntPoint> Dungeon::Wall_Torch_Position_Mesh(const DungeonRoom& Room) const {
     TArray<FIntPoint> WallPos1;

@@ -3,5 +3,6 @@ Procedural Level Generation within the Unreal Engine V.5 to create a First Perso
 The game explores Procedural generation by continously generating levels for players on collision with an Exit Tile
 
 Art Assets By:
-STONEMOCAPSTUDIO (Wall, Ceiling, and Floor Tile)
-J's 3D (Book Asset)
+---------------------------------
+1. STONEMOCAPSTUDIO (Wall, Ceiling, and Floor Tile)
+2. J's 3D (Book Asset)

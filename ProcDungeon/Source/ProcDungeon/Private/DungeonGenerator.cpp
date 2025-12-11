@@ -27,10 +27,13 @@ ADungeonGenerator::ADungeonGenerator()
 void ADungeonGenerator::BeginPlay()
 {
     Super::BeginPlay();
+    Generate();
+}
 
+void ADungeonGenerator::Generate() {
     // Create 
-    //TODO: RANDDOM STREAM 
-    //see blue noise proj4 
+   //TODO: RANDDOM STREAM 
+   //see blue noise proj4 
     srand(time(nullptr));
 
     int width = 40 + rand() % 20;
@@ -47,13 +50,13 @@ void ADungeonGenerator::BeginPlay()
 
 
     UStaticMesh* WallMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
-    UMaterialInterface* WallMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/SM_Roads_05/Materials/Roads_05/MT00051-Pavement/MI_MT00051_Pavement.MI_MT00051_Pavement"));
+    UMaterialInterface* WallMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/OldWall/Material/M_OldWall.M_OldWall"));
 
     UStaticMesh* FloorMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
-    UMaterialInterface* FloorMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/SM_Roads_05/Materials/Roads_05/MT00051-Pavement/MI_MT00051_Pavement.MI_MT00051_Pavement"));
+    UMaterialInterface* FloorMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/OldWall/Material/M_OldWall.M_OldWall"));
 
     UStaticMesh* CeilingMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
-    UMaterialInterface* CeilingMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/SM_Roads_05/Materials/Roads_05/MT00051-Pavement/MI_MT00051_Pavement.MI_MT00051_Pavement"));
+    UMaterialInterface* CeilingMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/OldWall/Material/M_OldWall.M_OldWall"));
 
 
     const float TileSize = 100.0f;
@@ -126,51 +129,67 @@ void ADungeonGenerator::BeginPlay()
 
         }
     }
-   // UStaticMesh* TorchMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cone.Cone"));
-    //registering light component
+    // UStaticMesh* TorchMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cone.Cone"));
+     //registering light component
     const auto& Rooms = MyDungeon.getRooms();
     for (const auto& Room : Rooms)
-    {
-        TArray<FIntPoint> WallPos_ = MyDungeon.Wall_Torch_Positions(Room);
-        TArray<FIntPoint> LightPos_ = MyDungeon.Wall_LightPoint_Positions(Room);
-        if (WallPos_.IsEmpty()) {
-            continue;
+        if (FMath::RandRange(0, 1) == 0) {
+            {
+                TArray<FIntPoint> WallPos_ = MyDungeon.Wall_Torch_Positions(Room);
+                TArray<FIntPoint> LightPos_ = MyDungeon.Wall_LightPoint_Positions(Room);
+                if (WallPos_.IsEmpty()) {
+                    continue;
+                }
+                if (LightPos_.IsEmpty()) {
+                    continue;
+                }
+
+
+                UStaticMesh* TorchMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cone.Cone"));
+                FIntPoint POI = WallPos_[FMath::RandRange(0, WallPos_.Num() - 1)];
+                //the direction the wall is facing given the two 
+                FVector Normal = MyDungeon.WallPositionSet(POI.X, POI.Y);
+                //so it ss INSIDE WALL
+                float offset = -40.0f;
+                //world pos calculation 
+                FVector TorchPosition(
+                    POI.X * TileSize + Normal.X * offset,
+                    POI.Y * TileSize + Normal.Y * offset,
+                    CeilingZ * 0.4f
+                );
+
+                FVector2D N2D(Normal.Y, -Normal.X);
+                //using tan to generate the poinmt against the wall 
+                //convverting vector to angle to make sure its against wall properly.
+                float angle = FMath::RadiansToDegrees(FMath::Atan2(N2D.Y, N2D.X));
+                FRotator TorchRotation(180, angle, 0);
+                //TorchRotation.Pitch += 180.0f;
+                FVector LightPos = TorchPosition + FVector(0, 0, 60.f);
+
+                UStaticMeshComponent* TorchComponent = NewObject<UStaticMeshComponent>(this);
+                UMaterialInterface* TorchMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/SM_Roads_05/Materials/Roads_05/MT00270-Pavement/MI_MT00268_Pavement.MI_MT00268_Pavement"));
+                TorchComponent->SetStaticMesh(TorchMesh);
+                if (TorchMesh)
+                {
+                    TorchComponent->SetMaterial(0, TorchMaterial);
+                }
+                TorchComponent->SetWorldLocation(TorchPosition);
+                TorchComponent->SetWorldScale3D(FVector(0.5f));
+                TorchComponent->SetWorldRotation(TorchRotation);
+                TorchComponent->RegisterComponent();
+                TorchComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+
+
+                UPointLightComponent* PointLight = NewObject<UPointLightComponent>(this);
+                PointLight->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+                PointLight->SetIntensity(1000.0f);
+                PointLight->SetLightColor(FLinearColor(1.0f, 0.8f, 0.6f));
+                PointLight->SetAttenuationRadius(400.0f);
+                PointLight->SetCastShadows(true);
+                PointLight->SetWorldLocation(LightPos);
+                PointLight->RegisterComponent();
+            }
         }
-        if (LightPos_.IsEmpty()) {
-            continue;
-        }
-
-        UStaticMesh* TorchMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cone.Cone"));
-        FIntPoint POI = WallPos_[FMath::RandRange(0, WallPos_.Num() - 1)];
-        FVector Normal = MyDungeon.WallPositionSet(POI.X, POI.Y);
-        const float HalfInside = -TileSize * 0.3f;
-
-        FVector TorchPosition(
-            POI.X * TileSize + Normal.X * HalfInside,
-            POI.Y * TileSize + Normal.Y * HalfInside,
-            CeilingZ * 0.4f
-        );
-        FRotator TorchRotation = Normal.Rotation();
-        TorchRotation.Pitch += 180.0f;
-        FVector LightPos = TorchPosition + FVector(0, 0, 60.f);
-
-        UStaticMeshComponent* TorchComponent = NewObject<UStaticMeshComponent>(this);
-        TorchComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
-        TorchComponent->SetStaticMesh(TorchMesh);
-        TorchComponent->SetWorldLocation(TorchPosition);
-        TorchComponent->SetWorldScale3D(FVector(0.5f));
-        TorchComponent->SetWorldRotation(TorchRotation);
-        TorchComponent->RegisterComponent();
-
-        UPointLightComponent* PointLight = NewObject<UPointLightComponent>(this);
-        PointLight->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
-        PointLight->SetIntensity(1000.0f);
-        PointLight->SetLightColor(FLinearColor(1.0f, 0.8f, 0.6f));
-        PointLight->SetAttenuationRadius(500.0f);
-        PointLight->SetCastShadows(true);
-        PointLight->SetWorldLocation(LightPos);
-        PointLight->RegisterComponent();
-    }   
     auto start = MyDungeon.getstart();
     auto exit = MyDungeon.getexit();
 
@@ -190,52 +209,45 @@ void ADungeonGenerator::BeginPlay()
     ExitCollide->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
     ExitCollide->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
     ExitCollide->SetGenerateOverlapEvents(true);
+
+    UPointLightComponent* LightBook = NewObject<UPointLightComponent>(this);
+    LightBook->RegisterComponent();
+    LightBook->AttachToComponent(ExitCollide, FAttachmentTransformRules::KeepWorldTransform);
+    LightBook->SetIntensity(4000.0f);
+    LightBook->SetLightColor(FLinearColor(1.0f, 2.0f, 0.9f));
+    LightBook->SetAttenuationRadius(400.0f);
+    LightBook->SetCastShadows(false);
+
     //overlap event handler 
     //registering this to be the collision 
     ExitCollide->OnComponentBeginOverlap.AddDynamic(this, &ADungeonGenerator::OverlapExit);
 
 
     ExitCollide->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
-    
+
 }
+
 
  
 void ADungeonGenerator::RegenerateDungeon()
 {
     //destroy all spawned static meshes- walls, floor, etc..
-    TArray<UStaticMeshComponent*> StaticMeshes;
-    GetComponents<UStaticMeshComponent>(StaticMeshes);
-    for (UStaticMeshComponent* SM : StaticMeshes)
+    TArray<UActorComponent*> StaticMeshes = GetComponents().Array();
+    for (UActorComponent* SM : StaticMeshes)
     {
         if (SM && SM != MeshComponent)
         {
             SM->DestroyComponent();
         }
     }
-    //felt like the light points were not deleting causing excess light
-    //destroy all point lights
-    TArray<UPointLightComponent*> PointLights;
-    GetComponents<UPointLightComponent>(PointLights);
-    for (UPointLightComponent* PL : PointLights)
-    {
-        if (PL)
-        {
-            PL->DestroyComponent();
-        }
-    }
+  
     
 }
 
 // Called every frame
 void ADungeonGenerator::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-   // APlayerController* PC = GetWorld()->GetFirstPlayerController();
-    //if (PC && PC->WasInputKeyJustPressed(EKeys::R))
-    //{
-       //TO DO FIX REGEN
-    //    RegenerateDungeon();
-   // }
+    Super::Tick(DeltaTime);
 }
 
 void ADungeonGenerator::OverlapExit(UPrimitiveComponent* obj, AActor* actor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult){
@@ -244,6 +256,6 @@ void ADungeonGenerator::OverlapExit(UPrimitiveComponent* obj, AActor* actor, UPr
     if (ACharacter* player = Cast<ACharacter>(actor))
     {
         RegenerateDungeon();
-        BeginPlay(); 
+        Generate(); 
     }
 }

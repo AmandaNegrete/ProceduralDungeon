@@ -7,6 +7,7 @@
 using namespace std;
 
 //Purpose: Constructor to initialize dungeon parameters and grid
+//Stores all inputes and creates the viable 2D grid for the construction
 Dungeon::Dungeon(int width_, int height_, int maxRooms_, int minSize_, int maxSize_, int thickness) {
     width = width_;
     height = height_;
@@ -28,7 +29,8 @@ Dungeon::Dungeon(int width_, int height_, int maxRooms_, int minSize_, int maxSi
 void Dungeon::generateDungeon() {
     int attempts_before_infinite = 0;
     //method found online to prevent infinite loop: https://github.com/kentril0/ProceduralTerrain
-    while (rooms.size() < static_cast<size_t>(maxRooms) && attempts_before_infinite < maxRooms * 10) {
+    //loop until max number of rooms OR to avoid the infinite loop 
+    while (rooms.size() < static_cast<size_t>(maxRooms) && attempts_before_infinite < maxRooms * 20) {
 
         int fix_width =  width - 2;
         int fix_height = height - 2;
@@ -39,6 +41,7 @@ void Dungeon::generateDungeon() {
         int room_x = randomRoomValues(1, width - roomwidth - 1);
         int room_y = randomRoomValues(1, height - roomheight - 1);
 
+        //genrating width and heigh inside min and max limits 
         DungeonRoom newRoom = {room_x, room_y, roomwidth, roomheight};
 
         // Check overlaps
@@ -52,6 +55,7 @@ void Dungeon::generateDungeon() {
 
                 for (const auto& r : rooms)
                 {
+                    //method to locatee closest room to generate a corridor from new room to the closest.
                     int dx = (r.x + r.width / 2) - (newRoom.x + newRoom.width / 2);
                     int dy = (r.y + r.height / 2) - (newRoom.y + newRoom.height / 2);
                     int dist = dx * dx + dy * dy;
@@ -62,7 +66,7 @@ void Dungeon::generateDungeon() {
                         closestRoom = r;
                     }
                 }
-
+                //c
                 corridor(closestRoom, newRoom);
             }
             rooms.push_back(newRoom);
@@ -91,8 +95,10 @@ void Dungeon::generateDungeon() {
 
 }
 
-
+//creates the room of floor tiles. 
+//creating the playable space
 void Dungeon::createRoom(DungeonRoom room) {
+    //just calculating using the given param.
     for (int y = room.y; y < room.y + room.height && y < height; y++) {
         for (int x = room.x; x < room.x + room.width && x < width; x++) {
             grid[y][x] = FLOOR_TILE;
@@ -100,7 +106,7 @@ void Dungeon::createRoom(DungeonRoom room) {
     }
 }
 
-
+//ensuring no rooms overlap
 bool Dungeon::overlaps( DungeonRoom room) {
     for (size_t i = 0; i < rooms.size(); i++) {
         DungeonRoom other = rooms[i];
@@ -113,7 +119,8 @@ bool Dungeon::overlaps( DungeonRoom room) {
     }
     return false;
 }
-
+//connecting two rooms denoted by a and b
+//first horizontal, then vertical. 
 void Dungeon::corridor(DungeonRoom a, DungeonRoom b) {
     int ax = a.roomCenterX();
     int ay = a.roomCenterY();
@@ -230,7 +237,7 @@ bool Dungeon::edgeWall(int x, int y) const {
     return false;
 
 }
-//for wall point so that it doesnt get placed outside!s
+//for wall point so that it doesnt get placed outside! Returns the Normal BVector for direction
 FVector Dungeon::WallPositionSet(int x, int y) const
 {
     //checking grid neighbors to find floor neighbiors
@@ -250,6 +257,9 @@ FVector Dungeon::WallPositionSet(int x, int y) const
     //else default for the placement given below
     return FVector(1, 0, 0);
 }
+
+//These two return valid positions for light and the torches in DungeonGenerator.cpp
+
 //https://forums.unrealengine.com/t/how-to-create-a-pointlight-at-runtime-use-c/373942?utm_source=chatgpt.com
 TArray<FIntPoint> Dungeon::Wall_Torch_Positions(const DungeonRoom& Room) const {
     TArray<FIntPoint> WallPos;

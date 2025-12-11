@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "Components/SpotLightComponent.h"
 #include "ProcDungeonCharacter.generated.h"
+
 
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -48,9 +50,14 @@ protected:
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, Category ="Input")
 	class UInputAction* MouseLookAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	USpotLightComponent* Flashlight;
+	bool on = false;
 	
 public:
 	AProcDungeonCharacter();
+	void FlashlightOn();
 
 protected:
 

@@ -33,6 +33,16 @@ AProcDungeonCharacter::AProcDungeonCharacter()
 	FirstPersonCameraComponent->FirstPersonFieldOfView = 70.0f;
 	FirstPersonCameraComponent->FirstPersonScale = 0.6f;
 
+	Flashlight = CreateDefaultSubobject<USpotLightComponent>(TEXT("light player"));
+	Flashlight->SetupAttachment(GetFirstPersonCameraComponent());
+	Flashlight->SetRelativeLocation(FVector(22, 0, 0));
+
+	Flashlight->Intensity = 800.0f;
+	Flashlight->SetAttenuationRadius(400.0f);
+	Flashlight->InnerConeAngle = 10.0f;
+	Flashlight->OuterConeAngle = 40.0f;
+	Flashlight->SetCastShadows(false);
+
 	// configure the character comps
 	GetMesh()->SetOwnerNoSee(true);
 	GetMesh()->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::WorldSpaceRepresentation;
@@ -46,6 +56,7 @@ AProcDungeonCharacter::AProcDungeonCharacter()
 
 void AProcDungeonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {	
+	PlayerInputComponent->BindAction("Flashlight", IE_Pressed, this, &AProcDungeonCharacter::FlashlightOn);
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
@@ -117,4 +128,9 @@ void AProcDungeonCharacter::DoJumpEnd()
 {
 	// pass StopJumping to the character
 	StopJumping();
+}
+
+void AProcDungeonCharacter::FlashlightOn() {
+	on = !on;
+	Flashlight->SetVisibility(on);
 }
